@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # 1. DATABASE (PostgreSQL) - Stores SMS logs and User metadata
+  postgres:
+    image: postgres:16-alpine
+    container_name: sms_postgres
+    environment:
+      POSTGRES_USER: sms_user
+      POSTGRES_PASSWORD: sms_password
+      POSTGRES_DB: sms_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sms_network
+
+  # 2. CACHE (Redis) - Stores session state and "Reply MORE" pagination
+  redis:
+    image: redis:7-alpine
+    container_name: sms_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - sms_network
+
+  # 3. MESSAGE BROKER (Redpanda) - Faster, lighter alternative to Kafka for Dev
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: sms_kafka
+    command:
+      - redpanda start
+      - --smp 1  
+      - --memory 1G
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+    ports:
+      - "19092:19092" # External access for your Java App
+      - "9644:9644"   # Admin Console
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    networks:
+      - sms_network
+
+  # 4. KAFKA UI (Optional but helpful) - Visual interface to see your messages
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: sms_console
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redpanda
+    networks:
+      - sms_network
+
+networks:
+  sms_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redpanda_data:
