@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: query-service
+  profiles:
+    active: local
+  
+  # JPA / Database Configuration (Common)
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        "[format_sql]": true
+
+server:
+  port: 8081  # <--- CHANGED FROM DEFAULT 8080
+
+---
+# ==========================================
+# PROFILE: LOCAL
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: local
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sms_db
+    username: sms_user
+    password: sms_password
+    driver-class-name: org.postgresql.Driver
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    bootstrap-servers: localhost:19092
+    consumer:
+      group-id: query-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+---
+# ==========================================
+# PROFILE: DOCKER
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: docker
+  
+  datasource:
+    url: jdbc:postgresql://postgres:5432/sms_db
+    username: sms_user
+    password: sms_password
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+  kafka:
+    bootstrap-servers: redpanda:9092
+    consumer:
+      group-id: query-service-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
