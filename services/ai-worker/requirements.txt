@@ -1,0 +1,4 @@
+confluent-kafka
+python-dotenv
+requests
+ollama==0.1.6

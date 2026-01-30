@@ -32,6 +32,6 @@ public class SmsService {
             eventProducer.sendSmsEvent(savedMessage);
         }
 
-        // TODO: In the next step, we will push this ID to Kafka!
+       
     }
 }
