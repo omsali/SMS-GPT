@@ -3,56 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI over SMS - Agricultural Assistant</title>
+    <title>AI over SMS | Research Initiative</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f9f9f9; }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-height: 90vh; }
-        h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        h2 { color: #34495e; margin-top: 30px; }
-        .hero { background: #eef2f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid #3498db; }
-        .opt-in-box { background: #fff8e1; border: 1px solid #ffe0b2; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .legal-footer { font-size: 0.85em; color: #777; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
-        .cta-button { display: inline-block; background: #27ae60; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px; }
+        :root { --primary: #2563eb; --dark: #1e293b; --light: #f8fafc; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; color: #333; line-height: 1.6; background: var(--light); }
+        
+        /* Navbar */
+        nav { background: white; padding: 1rem 5%; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--dark); font-weight: 500; }
+
+        /* Hero Section */
+        header { background: var(--dark); color: white; padding: 4rem 5%; text-align: center; }
+        header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        header p { font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto 2rem; }
+
+        /* Services Section */
+        .section { padding: 4rem 5%; max-width: 1000px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--primary); margin-top: 0; }
+
+        /* Compliance Box (The specific thing Twilio looks for) */
+        .compliance-box { background: #fffbeb; border: 2px solid #fcd34d; padding: 2rem; border-radius: 8px; margin: 2rem 0; }
+        .compliance-box h2 { margin-top: 0; color: #92400e; }
+        
+        /* Footer */
+        footer { background: var(--dark); color: #cbd5e1; padding: 3rem 5%; margin-top: auto; }
+        footer a { color: white; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>AI over SMS Project</h1>
-    
-    <div class="hero">
-        <h3>Bridging the Digital Divide</h3>
-        <p>AI over SMS is a non-profit research initiative designed to provide offline access to AI-powered agricultural and educational information for communities with limited internet connectivity.</p>
-    </div>
+    <nav>
+        <a href="#" class="logo">AI over SMS</a>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#compliance">Terms & Privacy</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
 
-    <h2>How the Service Works</h2>
-    <p>Users can send text-based queries (e.g., "How to treat corn blight?") to our toll-free number and receive an AI-generated summary response. This service is intended for educational and research purposes only.</p>
+    <header>
+        <h1>Bringing AI to the Offline World</h1>
+        <p>A non-profit research initiative bridging the digital divide by providing generative AI access via standard SMS protocols.</p>
+    </header>
 
-    <div class="opt-in-box">
-        <h2>Mobile Terms of Service & Privacy Policy</h2>
-        <p><strong>Program Name:</strong> AI over SMS Research Assistant</p>
-        
-        <h3>1. Opt-In Instructions</h3>
-        <p>To start using the service, users must text the keyword <strong>START</strong> to <strong>+1 (866) 251-0758</strong>. By texting START, you explicitly consent to receive transactional AI responses to your queries from AI over SMS. Message frequency varies based on your user activity.</p>
-        
-        <h3>2. Opt-Out Instructions</h3>
-        <p>You can cancel the SMS service at any time. Just text <strong>STOP</strong> to +1 (866) 251-0758. After you send the SMS message "STOP" to us, we will send you an SMS message to confirm that you have been unsubscribed. After this, you will no longer receive SMS messages from us.</p>
-        
-        <h3>3. Help & Support</h3>
-        <p>If you are experiencing issues with the messaging program you can reply with the keyword <strong>HELP</strong> for more assistance, or you can get help directly at <strong>osali4@uic.edu</strong>.</p>
-        
-        <h3>4. Cost & Carriers</h3>
-        <p>Carriers are not liable for delayed or undelivered messages. Message and data rates may apply for any messages sent to you from us and to us from you.</p>
-        
-        <h3>5. Privacy Policy</h3>
-        <p>We respect your privacy. We will use your phone number solely to provide the AI response service you requested. <strong>We do not share, sell, or disclose your phone number or opt-in data to third parties or affiliates for marketing or promotional purposes.</strong> All data is used strictly for processing your immediate query.</p>
-    </div>
+    <section id="services" class="section">
+        <h2>Our Services</h2>
+        <div class="grid">
+            <div class="card">
+                <h3><i class="fas fa-robot"></i> Text-to-AI Query</h3>
+                <p>Users send natural language questions via SMS and receive summarized, locally relevant answers generated by our AI engine.</p>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-mobile-alt"></i> Offline Accessibility</h3>
+                <p>Designed for rural areas with no 4G/5G/Wi-Fi. Works on any basic feature phone with standard text messaging capabilities.</p>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-graduation-cap"></i> Educational Support</h3>
+                <p>Provides instant access to agricultural data, educational content, and general knowledge without internet.</p>
+            </div>
+        </div>
+    </section>
 
-    <div class="legal-footer">
-        <p>&copy; 2026 AI over SMS Research Project. All rights reserved.</p>
-        <p>Contact: osali4@uic.edu | Chicago, IL, USA</p>
-    </div>
-</div>
+    <section id="compliance" class="section">
+        <div class="compliance-box">
+            <h2>Mobile Terms of Service & Opt-In</h2>
+            <p><strong>Campaign Name:</strong> AI over SMS Research Project</p>
+            
+            <h3>1. How to Opt-In</h3>
+            <p>To start using the service, text the keyword <strong>START</strong> to our Toll-Free Number <strong>+1 (866) 251-0758</strong>. By texting START, you explicitly consent to receive transactional AI responses to your specific queries. Message frequency varies based on your usage.</p>
+            
+            <h3>2. How to Opt-Out</h3>
+            <p>Text <strong>STOP</strong> at any time to unsubscribe. We will send one final confirmation message, and then you will receive no further SMS.</p>
+            
+            <h3>3. Support</h3>
+            <p>Text <strong>HELP</strong> for assistance or contact our support team at <a href="mailto:monu@uic.edu">monu@uic.edu</a>.</p>
+            
+            <h3>4. Rates</h3>
+            <p>Message and data rates may apply depending on your carrier plan.</p>
+
+            <h3>5. Privacy Policy</h3>
+            <p>We value your privacy. Phone numbers are collected solely for the purpose of delivering the requested AI responses. <strong>We do not share, sell, or disclose user data to third parties for marketing purposes.</strong></p>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-grid">
+            <div>
+                <h3>AI over SMS Project</h3>
+                <p>A student-led research initiative at the University of Illinois Chicago.</p>
+            </div>
+            <div>
+                <h3>Contact Us</h3>
+                <p><strong>Email:</strong> monu@uic.edu</p>
+                <p><strong>Address:</strong><br>
+                Dept. of Computer Science (MC 152)<br>
+                851 S. Morgan St<br>
+                Chicago, IL 60607</p>
+            </div>
+        </div>
+        <div style="margin-top: 2rem; border-top: 1px solid #334155; padding-top: 1rem; font-size: 0.9em;">
+            &copy; 2026 AI over SMS Research. All rights reserved.
+        </div>
+    </footer>
 
 </body>
 </html>
