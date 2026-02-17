@@ -4,6 +4,7 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
+*.jar
 
 # IDE
 .vscode/
@@ -14,7 +15,14 @@ mvnw.cmd
 .DS_Store
 Thumbs.db
 
-# Python (for later)
+# Python
 __pycache__/
 venv/
 *.pyc
+C:\Om Sali\Projects\SMS-GPT\ai-over-sms\services\ai-worker\.env
+
+# --- Security ---
+.env
+**/.env
+*.env
+

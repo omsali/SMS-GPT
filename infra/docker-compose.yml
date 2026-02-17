@@ -1,14 +1,40 @@
 version: '3.8'
 
 services:
-  # 1. DATABASE (PostgreSQL) - Stores SMS logs and User metadata
+  # --- NEW: JAVA APP ---
+  query-service:
+    build: 
+      context: ../services/query-service # Points to where your Dockerfile is
+      dockerfile: Dockerfile
+    container_name: sms_query_service
+    ports:
+      - "8081:8081" # Expose to localhost
+    environment:
+      # Pass Twilio keys from .env
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      # Override config to talk to Docker containers (not localhost)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sms_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:9092
+    depends_on:
+      - postgres
+      - redis
+      - redpanda
+    networks:
+      - sms_network
+
+  # 1. DATABASE
   postgres:
     image: postgres:16-alpine
     container_name: sms_postgres
     environment:
-      POSTGRES_USER: sms_user
-      POSTGRES_PASSWORD: sms_password
-      POSTGRES_DB: sms_db
+      POSTGRES_USER: ${POSTGRES_USER}      # Reads from .env
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Reads from .env
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -16,7 +42,7 @@ services:
     networks:
       - sms_network
 
-  # 2. CACHE (Redis) - Stores session state and "Reply MORE" pagination
+  # 2. CACHE
   redis:
     image: redis:7-alpine
     container_name: sms_redis
@@ -25,7 +51,7 @@ services:
     networks:
       - sms_network
 
-  # 3. MESSAGE BROKER (Redpanda) - Faster, lighter alternative to Kafka for Dev
+  # 3. MESSAGE BROKER
   redpanda:
     image: docker.redpanda.com/redpandadata/redpanda:latest
     container_name: sms_kafka
@@ -37,14 +63,14 @@ services:
       - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
       - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
     ports:
-      - "19092:19092" # External access for your Java App
-      - "9644:9644"   # Admin Console
+      - "19092:19092"
+      - "9644:9644"
     volumes:
       - redpanda_data:/var/lib/redpanda/data
     networks:
       - sms_network
 
-  # 4. KAFKA UI (Optional but helpful) - Visual interface to see your messages
+  # 4. KAFKA UI
   redpanda-console:
     image: docker.redpanda.com/redpandadata/console:latest
     container_name: sms_console

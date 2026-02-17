@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+ai-over-sms\services\query-service\src\main\java\com\aioversms\queryservice\.env

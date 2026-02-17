@@ -16,9 +16,9 @@ import java.util.Optional;
 public class SmsDeliveryConsumer {
 
     private final SmsMessageRepository repository;
-    private final SmsPaginator paginator;     // <--- NEW
-    private final SessionService sessionService; // <--- NEW
-    // private final TwilioService twilioService; // <--- We will uncomment this next!
+    private final SmsPaginator paginator;
+    private final SessionService sessionService;
+    private final TwilioService twilioService; // <--- INJECTED NOW
 
     @KafkaListener(topics = "answers.out", groupId = "sms-delivery-group")
     public void consumeAiAnswer(String payload) {
@@ -39,22 +39,15 @@ public class SmsDeliveryConsumer {
                 // 1. Paginate
                 List<String> pages = paginator.paginate(aiResponse);
 
-                // 2. Save subsequent pages to Redis (if any)
+                // 2. Save subsequent pages to Redis
                 sessionService.savePages(phoneNumber, pages);
 
-                // 3. Send Page 1 Immediately
+                // 3. Send Page 1 via Twilio
                 String firstPage = pages.get(0);
                 
-                // --- TWILIO INTEGRATION POINT ---
-                // twilioService.sendSms(new SmsRequest(phoneNumber, firstPage)); 
+                log.info("🚀 Sending SMS to provider...");
+                twilioService.sendSms(phoneNumber, firstPage); // <--- REAL SEND
                 
-                // For now, Log it to verify Pagination Logic
-                log.info("🚀 SENDING SMS PART 1 TO [{}]: {}", phoneNumber, firstPage);
-                
-                if (pages.size() > 1) {
-                    log.info("⚠️ Message was long! {} more pages saved to Redis.", pages.size() - 1);
-                }
-
                 sms.setStatus("DELIVERED");
                 repository.save(sms);
             }

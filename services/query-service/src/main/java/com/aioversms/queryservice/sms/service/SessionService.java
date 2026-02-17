@@ -24,8 +24,6 @@ public class SessionService {
 
         // Push all pages to a Redis List (Right Push)
         if (pages.size() > 1) {
-            // We only store pages starting from index 1 (Page 2, Page 3...)
-            // Page 0 is sent immediately, so we don't cache it for "MORE" logic yet
             for (int i = 1; i < pages.size(); i++) {
                 redisTemplate.opsForList().rightPush(key, pages.get(i));
             }

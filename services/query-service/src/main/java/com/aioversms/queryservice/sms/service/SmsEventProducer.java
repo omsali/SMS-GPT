@@ -17,7 +17,6 @@ public class SmsEventProducer {
     public void sendSmsEvent(SmsMessage message) {
         log.info("Publishing SMS ID {} to topic {}", message.getId(), TOPIC);
         
-        // In a real production app, we would send a JSON object (DTO).
         // For Stage 1, we will send a simple string format: "ID:MESSAGE"
         String payload = message.getId() + ":" + message.getMessageText();
         String phoneNumber = message.getPhoneNumber() != null ? message.getPhoneNumber() : "default_value";
