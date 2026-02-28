@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   # --- NEW: JAVA APP ---
@@ -20,12 +20,36 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:9092
+      - MANAGEMENT_TRACING_SAMPLING_PROBABILITY=1.0
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://tempo:4318/v1/traces
     depends_on:
       - postgres
       - redis
       - redpanda
     networks:
       - sms_network
+
+  # 0. API GATEWAY (Kong) - The "Front Door"
+  kong:
+    image: kong:3.6
+    container_name: sms_gateway
+    environment:
+      KONG_DATABASE: "off"  # DB-less mode
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    volumes:
+      - ./kong/kong.yml:/usr/local/kong/declarative/kong.yml
+    ports:
+      - "8000:8000" # Proxy Port (Traffic comes here)
+      - "8001:8001" # Admin Port (For checking config)
+    networks:
+      - sms_network
+    depends_on:
+      - query-service
 
   # 1. DATABASE
   postgres:
@@ -82,6 +106,48 @@ services:
       - redpanda
     networks:
       - sms_network
+
+  # 6. METRICS SCRAPER (Prometheus)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sms_prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - sms_network
+    depends_on:
+      - kong
+
+  # 7. VISUAL DASHBOARD (Grafana)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sms_grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Default password
+    ports:
+      - "3000:3000"
+    networks:
+      - sms_network
+    depends_on:
+      - prometheus
+
+  # 8. DISTRIBUTED TRACING (Tempo)
+  tempo:
+    image: grafana/tempo:2.2.0
+    container_name: sms_tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo/tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "3200:3200"   # UI Port
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP (Spring Boot will use this)
+    networks:
+      - sms_network
+    depends_on:
+      - prometheus
 
 networks:
   sms_network:

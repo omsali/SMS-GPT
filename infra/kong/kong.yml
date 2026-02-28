@@ -1,0 +1,28 @@
+_format_version: "3.0"
+
+services:
+  - name: sms-service
+    url: http://query-service:8081  # Points to your Java Container
+    routes:
+      - name: sms-webhook
+        paths:
+          - /api/v1/sms/receive     # The path Twilio hits
+        strip_path: false           # Keep the path when sending to Java
+
+plugins:
+  # 1. Rate Limiting (The "Resume Feature")
+  # Limits users to 5 messages per minute to prevent spam/cost spikes
+  - name: rate-limiting
+    config:
+      minute: 5
+      policy: local
+      
+  # 2. Correlation ID (For "Tempo" Tracing later)
+  # Adds a unique ID to every request so we can track it
+  - name: correlation-id
+    config:
+      header_name: X-Request-ID
+      generator: uuid
+
+  # 3. Expose Metrics for Grafana
+  - name: prometheus
